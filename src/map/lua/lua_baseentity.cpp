@@ -2659,6 +2659,9 @@ void CLuaBaseEntity::addTeleport(uint8 teleType, uint32 bitval, sol::object cons
         case TELEPORT_TYPE::SURVIVAL:
             PChar->teleport.survival.access[set] |= bit;
             break;
+        case TELEPORT_TYPE::ESCHAN_PORTAL:
+            PChar->teleport.eschanPortal[set] |= bit;
+            break;
         default:
             ShowError("LuaBaseEntity::addTeleport : Parameter 1 out of bounds.");
             return;
@@ -2673,7 +2676,7 @@ void CLuaBaseEntity::addTeleport(uint8 teleType, uint32 bitval, sol::object cons
  *  Notes   :
  ************************************************************************/
 
-uint32 CLuaBaseEntity::getTeleport(uint8 type)
+uint32 CLuaBaseEntity::getTeleport(uint8 type, sol::object const& regionObj)
 {
     XI_DEBUG_BREAK_IF(m_PBaseEntity->objtype != TYPE_PC);
 
@@ -2706,6 +2709,17 @@ uint32 CLuaBaseEntity::getTeleport(uint8 type)
         case TELEPORT_TYPE::CAMPAIGN_WINDY:
             return PChar->teleport.campaignWindy;
             break;
+        case TELEPORT_TYPE::ESCHAN_PORTAL:
+        {
+            uint8 eschanRegion = regionObj.is<uint8>() ? regionObj.as<uint8>() : MAX_ESCHANZONES;
+
+            if (eschanRegion >= MAX_ESCHANZONES)
+            {
+                return 0;
+            }
+
+            return PChar->teleport.eschanPortal[eschanRegion];
+        }
         default:
             ShowError("LuaBaseEntity::getteleport : Parameter 1 out of bounds.");
     }

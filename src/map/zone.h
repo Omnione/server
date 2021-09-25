@@ -435,7 +435,8 @@ enum class TELEPORT_TYPE : uint8
     CAMPAIGN_BASTOK = 7,
     CAMPAIGN_WINDY  = 8,
     HOMEPOINT       = 9,
-    SURVIVAL        = 10
+    SURVIVAL        = 10,
+    ESCHAN_PORTAL   = 11,
 };
 
 enum ZONEMISC

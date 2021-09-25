@@ -69,6 +69,7 @@ from migrations import currency2
 from migrations import languages
 from migrations import add_field_chocobo_column
 from migrations import add_new_wardrobe_columns
+from migrations import escha_unlocks
 
 # Append new migrations to this list and import above
 migrations = [
@@ -97,7 +98,8 @@ migrations = [
     currency2,
     languages,
     add_field_chocobo_column,
-    add_new_wardrobe_columns
+    add_new_wardrobe_columns,
+    escha_unlocks
 ]
 
 # These are the 'protected' files

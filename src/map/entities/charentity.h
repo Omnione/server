@@ -39,6 +39,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/
 #define MAX_QUESTID     256
 #define MAX_MISSIONAREA 15
 #define MAX_MISSIONID   851
+#define MAX_ESCHANZONES 3
 
 class CItemWeapon;
 class CTrustEntity;
@@ -94,6 +95,7 @@ struct Teleport_t
     uint32      campaignWindy;
     Telepoint_t homepoint;
     Telepoint_t survival;
+    uint8       eschanPortal[MAX_ESCHANZONES];
 };
 
 struct PetInfo_t

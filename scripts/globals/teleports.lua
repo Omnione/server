@@ -146,7 +146,7 @@ local destinations =
     [ids.SOUTHERN_SAN_DORIA_S]  = { -98.000,    1.000,  -41.000, 224,  80},
     [ids.BASTOK_MARKETS_S]      = {-291.000,  -10.000, -107.000, 212,  87},
     [ids.WINDURST_WATERS_S]     = { -31.442,   -5.000,  129.202, 128,  94},
-    [ids.ESCHA_ZITAH]           = {    -338,        6,     -225, 172, 288},
+    [ids.ESCHA_ZITAH]           = {-345.173,    1.232, -179.980, 178, 288},
     [ids.QUFIM_CONFLUENCE]      = {    -203,      -20,       81,  76, 126},
     [ids.ESCHA_RUAUN]           = {  -0.371,  -34.279, -466.980, 192, 289},
     [ids.MISAREAUX_CONFLUENCE]  = { -57.385,  -21.460,  568.941, 160,  25}
@@ -164,7 +164,8 @@ xi.teleport.type =
     CAMPAIGN_BASTOK    = 7,
     CAMPAIGN_WINDURST  = 8,
     HOMEPOINT          = 9,
-    SURVIVAL           = 10
+    SURVIVAL           = 10,
+    ESCHAN_PORTAL      = 11,
 }
 
 xi.teleport.runic_portal =
