@@ -1180,12 +1180,27 @@ void CLuaBaseEntity::resetGotMessage()
  *  Notes   : Also used for Regain and Spike spell effects
  ************************************************************************/
 
-void CLuaBaseEntity::setFlag(uint32 flags)
+void CLuaBaseEntity::setNameFlags(uint32 flags)
 {
-    XI_DEBUG_BREAK_IF(m_PBaseEntity->objtype != TYPE_PC);
-
-    static_cast<CCharEntity*>(m_PBaseEntity)->nameflags.flags ^= flags;
+    m_PBaseEntity->nameflags.flags ^= flags;
     m_PBaseEntity->updatemask |= UPDATE_HP;
+}
+
+/************************************************************************
+ *  Function: getNameFlags()
+ *  Purpose : gets a flag for an entity
+ *  Example : player:getNameFlags(FLAG_GM)
+ *  Notes   : Also used for Regain and Spike spell effects
+ ************************************************************************/
+
+uint32 CLuaBaseEntity::getNameFlags()
+{
+    if (m_PBaseEntity != nullptr)
+    {
+        return m_PBaseEntity->getNameFlags();
+    }
+
+    return 0;
 }
 
 /************************************************************************
@@ -4401,11 +4416,7 @@ void CLuaBaseEntity::hideName(bool isHidden)
 
 bool CLuaBaseEntity::checkNameFlags(uint32 flags)
 {
-    XI_DEBUG_BREAK_IF(m_PBaseEntity->objtype != TYPE_PC);
-
-    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
-
-    if (PChar->nameflags.flags & flags)
+    if (m_PBaseEntity->nameflags.flags & flags)
     {
         return true;
     }
@@ -4706,7 +4717,7 @@ bool CLuaBaseEntity::isSeekingParty()
 {
     XI_DEBUG_BREAK_IF(m_PBaseEntity->objtype != TYPE_PC);
 
-    return (static_cast<CCharEntity*>(m_PBaseEntity)->nameflags.flags & FLAG_INVITE);
+    return m_PBaseEntity->nameflags.flags & FLAG_INVITE;
 }
 
 /************************************************************************
@@ -12168,57 +12179,32 @@ uint8 CLuaBaseEntity::getModelSize()
 }
 
 /************************************************************************
- *  Function: setMobFlags()
- *  Purpose : Manually set Mob flags
- *  Example : player:setMobFlags(flags, targ:getID())
- *  Notes   : Currently only used through !setmobflags command
+ *  Function: setEntityFlags()
+ *  Purpose : Manually set entity flags
+ *  Example : targ:setEntityFlags(flags)
+ *  Notes   : Currently only used through !setEntityflags command
  ************************************************************************/
 
-void CLuaBaseEntity::setMobFlags(uint32 flags, uint32 mobid)
+void CLuaBaseEntity::setEntityFlags(uint32 flags)
 {
-    XI_DEBUG_BREAK_IF(m_PBaseEntity->objtype != TYPE_PC);
-
-    CMobEntity* PMob = (CMobEntity*)zoneutils::GetEntity(mobid, TYPE_MOB);
-
-    if (PMob != nullptr)
+    if (m_PBaseEntity != nullptr)
     {
-        PMob->setEntityFlags(flags);
-        PMob->updatemask |= UPDATE_HP;
-    }
-    else
-    {
-        CCharEntity*   PChar   = (CCharEntity*)m_PBaseEntity;
-        CBattleEntity* PTarget = (CBattleEntity*)PChar->GetEntity(PChar->m_TargID);
-
-        if (PTarget == nullptr)
-        {
-            ShowError("Must target a monster to use for setMobFlags ");
-            return;
-        }
-        else if (PTarget->objtype != TYPE_MOB)
-        {
-            ShowError("Battle target must be a monster to use setMobFlags ");
-            return;
-        }
-
-        ((CMobEntity*)PTarget)->setEntityFlags(flags);
-        PTarget->updatemask |= UPDATE_HP;
+        m_PBaseEntity->setEntityFlags(flags);
+        m_PBaseEntity->updatemask |= UPDATE_HP;
     }
 }
 
 /************************************************************************
- *  Function: getMobFlags()
- *  Purpose : Get Mob flags
+ *  Function: getEntityFlags()
+ *  Purpose : Get an enities flags
  *  Example : Not in use in scripts
- *  Notes   : Currently only used through !getMobFlags command
+ *  Notes   : Currently only used through !getEntityFlags command
  ************************************************************************/
-uint32 CLuaBaseEntity::getMobFlags()
+uint32 CLuaBaseEntity::getEntityFlags()
 {
-    XI_DEBUG_BREAK_IF(m_PBaseEntity->objtype != TYPE_MOB);
-
-    if (auto* PMob = dynamic_cast<CMobEntity*>(m_PBaseEntity))
+    if (m_PBaseEntity != nullptr)
     {
-        return PMob->getEntityFlags();
+        return m_PBaseEntity->getEntityFlags();
     }
 
     return 0;
@@ -13454,7 +13440,10 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("didGetMessage", CLuaBaseEntity::didGetMessage);
     SOL_REGISTER("resetGotMessage", CLuaBaseEntity::resetGotMessage);
 
-    SOL_REGISTER("setFlag", CLuaBaseEntity::setFlag);
+    SOL_REGISTER("setNameFlags", CLuaBaseEntity::setNameFlags);
+    SOL_REGISTER("getNameFlags", CLuaBaseEntity::getNameFlags);
+    SOL_REGISTER("setEntityFlags", CLuaBaseEntity::setEntityFlags);
+    SOL_REGISTER("getEntityFlags", CLuaBaseEntity::getEntityFlags);
     SOL_REGISTER("getMoghouseFlag", CLuaBaseEntity::getMoghouseFlag);
     SOL_REGISTER("setMoghouseFlag", CLuaBaseEntity::setMoghouseFlag);
     SOL_REGISTER("needToZone", CLuaBaseEntity::needToZone);
@@ -14065,8 +14054,6 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("isNM", CLuaBaseEntity::isNM);
 
     SOL_REGISTER("getModelSize", CLuaBaseEntity::getModelSize);
-    SOL_REGISTER("setMobFlags", CLuaBaseEntity::setMobFlags);
-    SOL_REGISTER("getMobFlags", CLuaBaseEntity::getMobFlags);
 
     SOL_REGISTER("spawn", CLuaBaseEntity::spawn);
     SOL_REGISTER("isSpawned", CLuaBaseEntity::isSpawned);

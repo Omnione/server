@@ -169,7 +169,7 @@ CInstance* CInstanceLoader::LoadInstance()
             PMob->m_Element     = (uint8)sql->GetIntData(57);
             PMob->m_Family      = (uint16)sql->GetIntData(58);
             PMob->m_name_prefix = (uint8)sql->GetIntData(59);
-            PMob->m_flags       = (uint32)sql->GetIntData(60);
+            PMob->entityflags   = (uint32)sql->GetIntData(60);
 
             // Special sub animation for Mob (yovra, jailer of love, phuabo)
             // yovra 1: en hauteur, 2: en bas, 3: en haut
@@ -257,7 +257,7 @@ CInstance* CInstanceLoader::LoadInstance()
 
                 PNpc->namevis = (uint8)sql->GetIntData(11);
                 PNpc->status  = static_cast<STATUS_TYPE>(sql->GetIntData(12));
-                PNpc->m_flags = (uint32)sql->GetUIntData(13);
+                PNpc->entityflags = (uint32)sql->GetUIntData(13);
 
                 memcpy(&PNpc->look, sql->GetData(14), 20);
 

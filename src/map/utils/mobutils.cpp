@@ -1337,7 +1337,7 @@ Usage:
                 PMob->m_Element     = (uint8)sql->GetIntData(54);
                 PMob->m_Family      = (uint16)sql->GetIntData(55);
                 PMob->m_name_prefix = (uint8)sql->GetIntData(56);
-                PMob->m_flags       = (uint32)sql->GetIntData(57);
+                PMob->entityflags       = (uint32)sql->GetIntData(57);
 
                 // Special sub animation for Mob (yovra, jailer of love, phuabo)
                 // yovra 1: en hauteur, 2: en bas, 3: en haut
@@ -1479,7 +1479,7 @@ Usage:
                 PMob->m_Element     = (uint8)sql->GetIntData(54);
                 PMob->m_Family      = (uint16)sql->GetIntData(55);
                 PMob->m_name_prefix = (uint8)sql->GetIntData(56);
-                PMob->m_flags       = (uint32)sql->GetIntData(57);
+                PMob->entityflags       = (uint32)sql->GetIntData(57);
 
                 PMob->animationsub = (uint32)sql->GetIntData(58);
 

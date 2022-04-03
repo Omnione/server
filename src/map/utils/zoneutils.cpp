@@ -317,7 +317,7 @@ namespace zoneutils
 
                     PNpc->namevis = (uint8)sql->GetIntData(13);
                     PNpc->status  = static_cast<STATUS_TYPE>(sql->GetIntData(14));
-                    PNpc->m_flags = (uint32)sql->GetUIntData(15);
+                    PNpc->entityflags = (uint32)sql->GetUIntData(15);
 
                     std::memcpy(&PNpc->look, sql->GetData(16), 20);
 
@@ -461,7 +461,7 @@ namespace zoneutils
                     PMob->m_Element     = (uint8)sql->GetIntData(58);
                     PMob->m_Family      = (uint16)sql->GetIntData(59);
                     PMob->m_name_prefix = (uint8)sql->GetIntData(60);
-                    PMob->m_flags       = (uint32)sql->GetIntData(61);
+                    PMob->entityflags   = (uint32)sql->GetIntData(61);
 
                     // Cap Level if Necessary (Don't Cap NMs)
                     if (normalLevelRangeMin > 0 && !(PMob->m_Type & MOBTYPE_NOTORIOUS) && PMob->m_minLevel > normalLevelRangeMin)

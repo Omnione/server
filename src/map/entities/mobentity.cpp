@@ -63,7 +63,6 @@ CMobEntity::CMobEntity()
 
     HPscale = 1.0;
     MPscale = 1.0;
-    m_flags = 0;
 
     allegiance = ALLEGIANCE_TYPE::MOB;
 
@@ -128,16 +127,6 @@ CMobEntity::CMobEntity()
     m_StatPoppedMobs = false;
 
     PAI = std::make_unique<CAIContainer>(this, std::make_unique<CPathFind>(this), std::make_unique<CMobController>(this), std::make_unique<CTargetFind>(this));
-}
-
-uint32 CMobEntity::getEntityFlags() const
-{
-    return m_flags;
-}
-
-void CMobEntity::setEntityFlags(uint32 EntityFlags)
-{
-    m_flags = EntityFlags;
 }
 
 CMobEntity::~CMobEntity()
@@ -415,55 +404,55 @@ void CMobEntity::HideHP(bool hide)
 {
     if (hide)
     {
-        m_flags |= FLAG_HIDE_HP;
+        entityflags |= FLAG_HIDE_HP;
     }
     else
     {
-        m_flags &= ~FLAG_HIDE_HP;
+        entityflags &= ~FLAG_HIDE_HP;
     }
     updatemask |= UPDATE_HP;
 }
 
 bool CMobEntity::IsHPHidden() const
 {
-    return m_flags & FLAG_HIDE_HP;
+    return entityflags & FLAG_HIDE_HP;
 }
 
 void CMobEntity::CallForHelp(bool call)
 {
     if (call)
     {
-        m_flags |= FLAG_CALL_FOR_HELP;
+        entityflags |= FLAG_CALL_FOR_HELP;
         m_OwnerID.clean();
     }
     else
     {
-        m_flags &= ~FLAG_CALL_FOR_HELP;
+        entityflags &= ~FLAG_CALL_FOR_HELP;
     }
     updatemask |= UPDATE_COMBAT;
 }
 
 bool CMobEntity::CalledForHelp() const
 {
-    return m_flags & FLAG_CALL_FOR_HELP;
+    return entityflags & FLAG_CALL_FOR_HELP;
 }
 
 void CMobEntity::Untargetable(bool untargetable)
 {
     if (untargetable)
     {
-        m_flags |= FLAG_UNTARGETABLE;
+        entityflags |= FLAG_UNTARGETABLE;
     }
     else
     {
-        m_flags &= ~FLAG_UNTARGETABLE;
+        entityflags &= ~FLAG_UNTARGETABLE;
     }
     updatemask |= UPDATE_HP;
 }
 
 bool CMobEntity::IsUntargetable() const
 {
-    return m_flags & FLAG_UNTARGETABLE;
+    return entityflags & FLAG_UNTARGETABLE;
 }
 
 void CMobEntity::PostTick()

@@ -219,7 +219,7 @@ std::optional<CLuaBaseEntity> CLuaZone::insertDynamicEntity(sol::table table)
     {
         PNpc->namevis       = table.get_or<uint8>("namevis", 0);
         PNpc->status        = STATUS_TYPE::NORMAL;
-        PNpc->m_flags       = 0;
+        PNpc->entityflags   = 0;
         PNpc->name_prefix   = 32;
 
         // TODO: Does this even work?

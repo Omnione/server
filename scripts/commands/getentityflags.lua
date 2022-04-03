@@ -1,18 +1,18 @@
 -----------------------------------
--- func: getmobflags <optional MobID>
--- desc: Used to get a mob's entity flags for testing.
---       MUST either target a mob first or else specify a Mob ID.
+-- func: getentityflags
+-- desc: Used to get an entities entity flags for testing.
+--       MUST target an entity first.
 -----------------------------------
 
 cmdprops =
 {
     permission = 1,
-    parameters = "i"
+    parameters = ""
 }
 
 function error(player, msg)
     player:PrintToPlayer(msg)
-    player:PrintToPlayer("!getmobflags {mob ID}")
+    player:PrintToPlayer("!getentityflags")
 end
 
 function onTrigger(player, target)
@@ -20,20 +20,14 @@ function onTrigger(player, target)
     local targ
     if not target then
         targ = player:getCursorTarget()
-        if not targ or not targ:isMob() then
-            error(player, "You must either supply a mob ID or target a mob.")
-            return
-        end
-    else
-        targ = GetMobByID(target)
         if not targ then
-            error(player, "Invalid mob ID.")
+            error(player, "You must target an entity.")
             return
         end
     end
 
     -- set flags
-    local flags = targ:getMobFlags()
+    local flags = targ:getEntityFlags()
     local hex = "0x" .. string.format("%08x", flags)
     player:PrintToPlayer(string.format("%s's flags: %s (%u)", targ:getName(), hex, flags))
 end

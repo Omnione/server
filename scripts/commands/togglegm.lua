@@ -26,24 +26,24 @@ function onTrigger(player)
 
     if (player:checkNameFlags(FLAG_GM)) then
         if (player:checkNameFlags(FLAG_GM)) then
-            player:setFlag(FLAG_GM)
+            player:setNameFlags(FLAG_GM)
         end
         if (player:checkNameFlags(FLAG_SENIOR)) then
-            player:setFlag(FLAG_SENIOR)
+            player:setNameFlags(FLAG_SENIOR)
         end
         if (player:checkNameFlags(FLAG_LEAD)) then
-            player:setFlag(FLAG_LEAD)
+            player:setNameFlags(FLAG_LEAD)
         end
     else
         local gmlvl = player:getGMLevel()
         if (gmlvl >= MINLVL_GM_PRODUCER) then
-            player:setFlag(FLAG_GM_PRODUCER)
+            player:setNameFlags(FLAG_GM_PRODUCER)
         elseif (gmlvl >= MINLVL_GM_LEAD) then
-            player:setFlag(FLAG_GM_LEAD)
+            player:setNameFlags(FLAG_GM_LEAD)
         elseif (gmlvl >= MINLVL_GM_SENIOR) then
-            player:setFlag(FLAG_GM_SENIOR)
+            player:setNameFlags(FLAG_GM_SENIOR)
         elseif (gmlvl >= MINLVL_GM) then
-            player:setFlag(FLAG_GM)
+            player:setNameFlags(FLAG_GM)
         end
     end
 end

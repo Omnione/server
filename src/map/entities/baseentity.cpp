@@ -34,6 +34,8 @@ CBaseEntity::CBaseEntity()
     targid   = 0;
     objtype  = ENTITYTYPE::TYPE_NONE;
     m_TargID = 0;
+    entityflags = 0;
+    nameflags.flags = 0;
     memset(&look, 0, sizeof(look));
     memset(&mainlook, 0, sizeof(mainlook));
     // False positive: any reasonable compiler is IEEE754-1985 compatible
@@ -151,6 +153,33 @@ CBaseEntity* CBaseEntity::GetEntity(uint16 targid, uint8 filter) const
     {
         return loc.zone->GetEntity(targid, filter);
     }
+}
+
+uint32 CBaseEntity::getNameFlags() const
+{
+    return nameflags.flags;
+}
+
+void CBaseEntity::setNameFlags(uint32 flags)
+{
+
+    nameflags.flags = flags;
+
+}
+
+void CBaseEntity::setEntityFlags(uint32 flags)
+{
+    entityflags = flags;
+}
+
+uint32 CBaseEntity::getEntityFlags() const
+{
+    if (this->objtype == ENTITYTYPE::TYPE_PC)
+    {
+        return nameflags.flags;
+    }
+
+    return entityflags;
 }
 
 void CBaseEntity::ResetLocalVars()

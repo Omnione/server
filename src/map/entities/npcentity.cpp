@@ -44,48 +44,38 @@ CNpcEntity::CNpcEntity()
 
 CNpcEntity::~CNpcEntity() = default;
 
-uint32 CNpcEntity::getEntityFlags() const
-{
-    return m_flags;
-}
-
-void CNpcEntity::setEntityFlags(uint32 EntityFlags)
-{
-    m_flags = EntityFlags;
-}
-
 void CNpcEntity::HideHP(bool hide)
 {
     if (hide)
     {
-        m_flags |= 0x100;
+        entityflags |= 0x100;
     }
     else
     {
-        m_flags &= ~0x100;
+        entityflags &= ~0x100;
     }
 }
 
 bool CNpcEntity::IsHPHidden() const
 {
-    return (m_flags & 0x800) == 0x800;
+    return (entityflags & 0x800) == 0x800;
 }
 
 void CNpcEntity::Untargetable(bool untargetable)
 {
     if (untargetable)
     {
-        m_flags |= 0x800;
+        entityflags |= 0x800;
     }
     else
     {
-        m_flags &= ~0x800;
+        entityflags &= ~0x800;
     }
 }
 
 bool CNpcEntity::IsUntargetable() const
 {
-    return (m_flags & 0x800) == 0x800;
+    return (entityflags & 0x800) == 0x800;
 }
 
 bool CNpcEntity::IsTriggerable() const

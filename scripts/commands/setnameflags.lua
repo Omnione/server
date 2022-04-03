@@ -1,17 +1,17 @@
 -----------------------------------
--- func: setflag <flags> <target>
+-- func: setnameflags <flags>
 -- desc: set arbitrary flags for testing
 -----------------------------------
 
 cmdprops =
 {
     permission = 1,
-    parameters = "ss"
+    parameters = "s"
 }
 
 function error(player, msg)
     player:PrintToPlayer(msg)
-    player:PrintToPlayer("!setflag <flags> {player}")
+    player:PrintToPlayer("!setnameflags <flags>")
 end
 
 function onTrigger(player, flags, target)
@@ -35,6 +35,6 @@ function onTrigger(player, flags, target)
     end
 
     -- set flags
-    targ:setFlag( flags )
+    targ:setNameFlags( flags )
 
 end

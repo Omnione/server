@@ -112,7 +112,7 @@ CEntityUpdatePacket::CEntityUpdatePacket(CBaseEntity* PEntity, ENTITYUPDATE type
                 ref<uint8>(0x1F) = PEntity->animation;
                 ref<uint8>(0x2A) |= PEntity->animationsub;
 
-                ref<uint32>(0x21) = ((CNpcEntity*)PEntity)->m_flags;
+                ref<uint32>(0x21) = ((CNpcEntity*)PEntity)->entityflags;
                 ref<uint8>(0x27)  = ((CNpcEntity*)PEntity)->name_prefix; // gender and something else
 
                 if (PNpc->IsTriggerable())
@@ -137,7 +137,7 @@ CEntityUpdatePacket::CEntityUpdatePacket(CBaseEntity* PEntity, ENTITYUPDATE type
                     ref<uint8>(0x1F) = PEntity->animation;
                     ref<uint8>(0x2A) |= PEntity->animationsub;
 
-                    ref<uint32>(0x21) = PMob->m_flags;
+                    ref<uint32>(0x21) = PMob->entityflags;
                     ref<uint8>(0x25)  = PMob->health.hp > 0 ? 0x08 : 0;
                     ref<uint8>(0x27)  = PMob->m_name_prefix;
                     if (PMob->PMaster != nullptr && PMob->PMaster->objtype == TYPE_PC)

@@ -227,6 +227,10 @@ public:
 
     CBaseEntity* GetEntity(uint16 targid, uint8 filter = -1) const;
 
+    uint32 getNameFlags() const;         // Returns the current value in nameflags
+    void   setNameFlags(uint32 flags);   // Change the current value in nameflags
+    uint32 getEntityFlags() const;       // Returns the current value in entityflags
+    void   setEntityFlags(uint32 flags); // Change the current value in entityflags
     void   ResetLocalVars();
     uint32 GetLocalVar(const char* var);
     void   SetLocalVar(const char* var, uint32 val);
@@ -258,8 +262,10 @@ public:
     uint8           speed;        // скорость передвижения
     uint8           speedsub;     // подолнительный параметр скорости передвижения
     uint8           namevis;
-    ALLEGIANCE_TYPE allegiance; // what types of targets the entity can fight
-    uint8           updatemask; // what to update next server tick to players nearby
+    ALLEGIANCE_TYPE allegiance;   // what types of targets the entity can fight
+    uint8           updatemask;   // what to update next server tick to players nearby
+    nameflags_t     nameflags;    // Flags for player characters this will change icons next to name.
+    uint32          entityflags;  // includes the CFH flag and whether the HP bar should be shown or not (e.g. Yilgeban doesnt)
 
 
     std::unique_ptr<CAIContainer> PAI;          // AI container

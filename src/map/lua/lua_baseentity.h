@@ -97,10 +97,13 @@ public:
     bool didGetMessage();   // Used by interaction framework to determine if player triggered something else
     void resetGotMessage(); // Used by interaction framework to reset if player triggered something else
 
-    void  setFlag(uint32 flags);
-    uint8 getMoghouseFlag();
-    void  setMoghouseFlag(uint8 flag);
-    bool  needToZone(sol::object const& arg0); // Check if player has zoned since the flag has been raised
+    void   setNameFlags(uint32 flags);   // Used to manipulate the entities name flags.
+    uint32 getNameFlags();               // Used to retrive the entities name flags.
+    void   setEntityFlags(uint32 flags); // Used to manipulate the entity flags for testing.
+    uint32 getEntityFlags();             // Used to retrive the entity flags.
+    uint8  getMoghouseFlag();
+    void   setMoghouseFlag(uint8 flag);
+    bool   needToZone(sol::object const& arg0); // Check if player has zoned since the flag has been raised
 
     // Object Identification
     uint32 getID();
@@ -113,6 +116,7 @@ public:
     bool  isMob();
     bool  isPet();
     bool  isAlly();
+
 
     // AI and Control
     void  initNpcAi();
@@ -723,8 +727,6 @@ public:
     bool   isNM();
 
     uint8  getModelSize();
-    void   setMobFlags(uint32 flags, uint32 mobid); // Used to manipulate the mob's flags for testing.
-    uint32 getMobFlags();
 
     void   spawn(sol::object const& despawnSec, sol::object const& respawnSec);
     bool   isSpawned();
