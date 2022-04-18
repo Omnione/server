@@ -27,9 +27,11 @@ entity.onMobEngaged = function(mob, target)
     for i, v in pairs(bcnmAllies) do
         if v:getName() == "Prishe" then
             if not v:getTarget() then
-                v:entityAnimationPacket("prov")
-                v:showText(v, ID.text.PRISHE_TEXT + 1)
-                v:setLocalVar("ready", mob:getID())
+                if not mob:hasStatusEffect(xi.effect.STUN) then
+                    v:entityAnimationPacket("prov", v)
+                    v:showText(v, ID.text.PRISHE_TEXT + 1)
+                    v:setLocalVar("ready", mob:getID())
+                end
             end
         else
             v:addEnmity(mob, 0, 1)

@@ -886,7 +886,7 @@ function npcUtil.castingAnimation(npc, magicType, phaseDuration, func)
         }
         npcArg:entityAnimationPacket(anims[magicType].start)
         npcArg:timer(anims[magicType].duration, function(npcTimerArg)
-            npcTimerArg:entityAnimationPacket(anims[magicType].stop)
+            npcTimerArg:entityAnimationPacket(npcTimerArg, anims[magicType].stop)
         end)
         npcUtil.castingAnimation(npcArg, magicType, phaseDuration, func)
     end)

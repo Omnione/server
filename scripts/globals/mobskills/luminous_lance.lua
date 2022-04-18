@@ -32,7 +32,7 @@ mobskill_object.onMobWeaponSkill = function(target, mob, skill)
 
     local dmg = xi.mobskills.mobFinalAdjustments(info.dmg, mob, skill, target, xi.attackType.RANGED, xi.damageType.PIERCING, info.hitslanded)
 
-    mob:entityAnimationPacket("ids0")
+    mob:entityAnimationPacket("ids0", target)
     mob:setLocalVar("lanceTime", mob:getBattleTime())
     mob:setLocalVar("lanceOut", 0)
     target:setAnimationSub(3)

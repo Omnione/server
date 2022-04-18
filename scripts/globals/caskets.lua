@@ -176,12 +176,12 @@ local function dropChance(player)
         prowessCasketsPower = casketProwessEffect:getPower()
     end
 
-    local rand = math.random()
-    if rand < utils.clamp(xi.settings.CASKET_DROP_RATE + kupowersMMBPower + prowessCasketsPower, 0, 1) then
+    --local rand = math.random()
+    --if rand < utils.clamp(xi.settings.CASKET_DROP_RATE + kupowersMMBPower + prowessCasketsPower, 0, 1) then
         return true
-    end
+    --end
 
-    return false
+    --return false
 end
 
 -----------------------------------
@@ -686,12 +686,13 @@ xi.caskets.onTrigger = function(player, npc)
     -- Chest Unlocked
     -----------------------------------
         if npc:getLocalVar("[caskets]SPAWNSTATUS") == casketInfo.spawnStatus.SPAWNED_CLOSED then      -- is the chest shut?, then open it.
-            npc:setAnimationSub(1)
+            npc:entityAnimationPacket("open")
             npc:setLocalVar("[caskets]SPAWNSTATUS", casketInfo.spawnStatus.SPAWNED_OPEN)
             -- RoE Timed Record #4019 - Crack Tresure Caskets
             if player:getEminenceProgress(4019) then
                 xi.roe.onRecordTrigger(player, 4019)
             end
+            npc:setAnimationSub(1)
         end
 
         if itemType == 1 then                -- temp items
@@ -933,7 +934,7 @@ xi.caskets.onEventFinish = function(player, csid, option, npc)
                         chestObj:setLocalVar("[caskets]LOCKED", 0)
 
                         if chestObj:getLocalVar("[caskets]SPAWNSTATUS") == casketInfo.spawnStatus.SPAWNED_CLOSED then  -- is the chest shut?, then open it.
-                           chestObj:setAnimationSub(1)
+                           chestObj:entityAnimationPacket("open")
                            chestObj:setLocalVar("[caskets]SPAWNSTATUS", casketInfo.spawnStatus.SPAWNED_OPEN)
                            -- RoE Timed Record #4019 - Crack Tresure Caskets
                            if player:getEminenceProgress(4019) then

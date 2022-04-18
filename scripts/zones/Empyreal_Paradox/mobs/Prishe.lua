@@ -19,10 +19,10 @@ entity.onMobRoam = function(mob)
 
     if ready == 0 and wait > 240 then
         if GetMobByID(promathia):getCurrentAction() ~= xi.act.NONE then
-            mob:entityAnimationPacket("prov")
+            mob:entityAnimationPacket("prov", promathia)
             mob:messageText(mob, ID.text.PRISHE_TEXT)
         else
-            mob:entityAnimationPacket("prov")
+            mob:entityAnimationPacket("prov", promathia)
             mob:messageText(mob, ID.text.PRISHE_TEXT + 1)
             promathia = promathia + 1
         end

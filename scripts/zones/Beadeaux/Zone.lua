@@ -52,7 +52,10 @@ end
 zone_object.onRegionEnter = function(player, region)
     if region:GetRegionID() <= 6 then
         if not player:hasStatusEffect(xi.effect.CURSE_I) and not player:hasStatusEffect(xi.effect.SILENCE) then
+
+            GetNPCByID(ID.npc.AFFLICTOR + (region:GetRegionID() -1)):entityAnimationPacket("main", player)
             player:addStatusEffect(xi.effect.CURSE_I, 50, 0, 300)
+
             if player:getQuestStatus(xi.quest.log_id.BASTOK, xi.quest.id.bastok.THE_CURSE_COLLECTOR) == QUEST_ACCEPTED and player:getCharVar("cCollectCurse") == 0 then
                 player:setCharVar("cCollectCurse", 1)
             end

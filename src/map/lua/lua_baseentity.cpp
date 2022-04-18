@@ -816,19 +816,33 @@ void CLuaBaseEntity::entityVisualPacket(std::string const& command, sol::object 
 /************************************************************************
  *  Function: entityAnimationPacket()
  *  Purpose : Sends an animation packet to the entity
- *  Example : mob:entityAnimationPacket("sp00")
- *  Notes   :
+ *  Example : mob:entityAnimationPacket("sp00") -- target is the entity using it
+ *            npc:entityAnimationPacket("sils", player) -- npc putting effect on player
+ *  Notes   : Will default to the entity using this if no target is given
  ************************************************************************/
 
-void CLuaBaseEntity::entityAnimationPacket(const char* command)
+void CLuaBaseEntity::entityAnimationPacket(const char* command, sol::object const& target)
 {
-    if (m_PBaseEntity->objtype == TYPE_PC)
+    CBaseEntity* PTarget = nullptr;
+    if (target != sol::lua_nil)
     {
-        static_cast<CCharEntity*>(m_PBaseEntity)->pushPacket(new CEntityAnimationPacket(m_PBaseEntity, command));
+        // If we have a target then set PTarget to that
+        CLuaBaseEntity* PLuaBaseEntity = target.as<CLuaBaseEntity*>();
+        PTarget                        = PLuaBaseEntity->GetBaseEntity();
     }
     else
     {
-        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, new CEntityAnimationPacket(m_PBaseEntity, command));
+        // If no target PTarget defaults to m_PBaseEntity
+        PTarget = m_PBaseEntity;
+    }
+
+    if (m_PBaseEntity->objtype == TYPE_PC)
+    {
+        static_cast<CCharEntity*>(m_PBaseEntity)->pushPacket(new CEntityAnimationPacket(m_PBaseEntity, PTarget, command));
+    }
+    else
+    {
+        m_PBaseEntity->loc.zone->PushPacket(m_PBaseEntity, CHAR_INRANGE, new CEntityAnimationPacket(m_PBaseEntity, PTarget, command));
     }
 }
 
