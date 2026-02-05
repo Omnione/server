@@ -1979,6 +1979,34 @@ void CLuaBaseEntity::pathTo(float x, float y, float z, const sol::object& flags)
 }
 
 /************************************************************************
+ *  Function: pathToLocation()
+ *  Purpose : Makes a non-PC move toward a target location using long-distance segmented pathing
+ *  Example : mob:pathToLocation(Pos.x, Pos.y, Pos.z);
+ *  Notes   : Only works if navmesh is present
+ *  ************************************************************************/
+
+void CLuaBaseEntity::pathToLocation(float x, float y, float z, const sol::object& flags)
+{
+    if (m_PBaseEntity->objtype == TYPE_PC)
+    {
+        ShowWarning("Invalid entity (Player: %s) calling function.", m_PBaseEntity->getName());
+        return;
+    }
+
+    position_t point;
+    point.x = x;
+    point.y = y;
+    point.z = z;
+
+    if (m_PBaseEntity->PAI->PathFind)
+    {
+        uint8 pathFlags = (flags != sol::lua_nil) ? flags.as<uint8>() : static_cast<uint8>(PATHFLAG_RUN | PATHFLAG_WALLHACK | PATHFLAG_SCRIPT);
+
+        m_PBaseEntity->PAI->PathFind->PathToLocation(point, pathFlags);
+    }
+}
+
+/************************************************************************
  *  Function: pathThrough()
  *  Purpose : Makes an Entity follow a given set of points
  *  Example : mob:pathThrough(pathfind.first(path), xi.path.flag.RUN)
@@ -19669,6 +19697,7 @@ void CLuaBaseEntity::Register()
 
     SOL_REGISTER("atPoint", CLuaBaseEntity::atPoint);
     SOL_REGISTER("pathTo", CLuaBaseEntity::pathTo);
+    SOL_REGISTER("pathToLocation", CLuaBaseEntity::pathToLocation);
     SOL_REGISTER("pathThrough", CLuaBaseEntity::pathThrough);
     SOL_REGISTER("isFollowingPath", CLuaBaseEntity::isFollowingPath);
     SOL_REGISTER("clearPath", CLuaBaseEntity::clearPath);

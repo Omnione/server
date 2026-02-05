@@ -20,6 +20,8 @@
 */
 
 #include "mobentity.h"
+#include "navmesh.h"
+#include "zone.h"
 
 #include "ai/ai_container.h"
 #include "ai/controllers/mob_controller.h"

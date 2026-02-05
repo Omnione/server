@@ -725,7 +725,7 @@ auto CMobController::DoCombatTick(timer::time_point tick) -> Task<void>
         {
             if (!PMob->PAI->PathFind->IsFollowingPath())
             {
-                PMob->PAI->PathFind->PathTo(PFollowTarget->loc.p);
+                PMob->PAI->PathFind->PathToTarget(PFollowTarget);
             }
             PMob->PAI->PathFind->FollowPath(m_Tick);
         }
@@ -866,18 +866,14 @@ void CMobController::Move()
                         // out of melee range, try to path towards
                         if (currentDistance > attack_range)
                         {
-                            auto projectedPosition = nearPosition(PTarget->loc.p, 0, rotationToRadian(worldAngle(PMob->loc.p, PTarget->loc.p)));
-
                             // try to find path towards target
-                            PMob->PAI->PathFind->PathInRange(projectedPosition, closeDistance, PATHFLAG_WALLHACK | PATHFLAG_RUN);
+                            PMob->PAI->PathFind->PathToTarget(PTarget, PATHFLAG_RUN);
                         }
                     }
                     else if (!isWithinDistance(PMob->PAI->PathFind->GetDestination(), PTarget->loc.p, 0.1)) // This checks against the previous frames distance, and can false positive for where we want to be _now_
                     {
-                        auto projectedPosition = nearPosition(PTarget->loc.p, 0, rotationToRadian(worldAngle(PMob->loc.p, PTarget->loc.p)));
-
                         // try to find path towards target
-                        PMob->PAI->PathFind->PathInRange(projectedPosition, closeDistance, PATHFLAG_WALLHACK | PATHFLAG_RUN);
+                        PMob->PAI->PathFind->PathToTarget(PTarget, PATHFLAG_RUN);
                     }
 
                     PMob->PAI->PathFind->FollowPath(m_Tick);

@@ -57,6 +57,8 @@ CPathFind::CPathFind(CBaseEntity* PTarget)
 , m_distanceMoved(0.0f)
 , m_maxDistance(0.0f)
 , m_carefulPathing(false)
+, m_currentSegmentedTarget{}
+, m_lastTargetPos{}
 {
     m_originalPoint.x        = 0.0f;
     m_originalPoint.y        = 0.0f;
@@ -159,6 +161,187 @@ bool CPathFind::PathTo(const position_t& point, uint8 pathFlags, bool clear)
 
     return true;
 }
+
+void CPathFind::PathToTarget(CBaseEntity* PTarget, uint8 pathFlags)
+{
+    TracyZoneScoped;
+    TracyZoneString(m_POwner->getName());
+
+    if (!PTarget || !m_POwner->loc.zone)
+    {
+        return;
+    }
+
+    // FALLBACK: If Navmesh is missing, use standard PathTo
+    if (!isNavMeshEnabled())
+    {
+        PathTo(PTarget->loc.p, pathFlags);
+        return;
+    }
+
+    float distToTarget = distance(m_POwner->loc.p, PTarget->loc.p);
+    bool  success      = true;
+
+    if (distToTarget > 50.0f)
+    {
+        // Long Range Logic
+        bool targetMoved = distance(PTarget->loc.p, m_lastTargetPos) > 20.0f;
+        bool atWaypoint  = distance(m_POwner->loc.p, m_currentSegmentedTarget) < 5.0f;
+
+        // Check if uninitialized (0,0,0)
+        bool uninitialized = (m_currentSegmentedTarget.x == 0.0f && m_currentSegmentedTarget.y == 0.0f && m_currentSegmentedTarget.z == 0.0f);
+
+        if (targetMoved || atWaypoint || uninitialized)
+        {
+            // Restricted findPath (limited to 128 nodes)
+            // Start from mob position towards target
+            std::vector<pathpoint_t> partialPath = m_POwner->loc.zone->m_navMesh->findPath(m_POwner->loc.p, PTarget->loc.p, 128);
+
+            bool       validIntermediate = false;
+            position_t intermediate      = {};
+
+            if (!partialPath.empty())
+            {
+                intermediate = partialPath.back().position;
+
+                // Vertical Safety: Y coordinate within 5 yalms
+                if (std::abs(intermediate.y - m_POwner->loc.p.y) <= 5.0f)
+                {
+                    validIntermediate = true;
+                }
+            }
+
+            if (validIntermediate)
+            {
+                // Path to the intermediate waypoint
+                m_currentSegmentedTarget = intermediate;
+                m_lastTargetPos          = PTarget->loc.p;
+                success                  = PathTo(intermediate, pathFlags);
+            }
+            else
+            {
+                // Fallback: Vertical safety failed or path failing
+                // Standard findPath to target
+                m_currentSegmentedTarget = PTarget->loc.p; // Set to target to avoid immediate retry
+                m_lastTargetPos          = PTarget->loc.p;
+                success                  = PathTo(PTarget->loc.p, pathFlags);
+            }
+        }
+    }
+    else
+    {
+        // Short-Range Logic (< 50 yalms)
+        // Switch to standard findPath with full detail to targets exact coordinates.
+        // Update if target moved significantly (e.g. > 3.0f to be responsive but not spammy)
+        // or if we were previously in long-range mode.
+
+        bool targetMoved           = distance(PTarget->loc.p, m_lastTargetPos) > 3.0f;
+        bool pathingToIntermediate = distance(m_currentSegmentedTarget, PTarget->loc.p) > 1.0f;
+
+        if (targetMoved || pathingToIntermediate)
+        {
+            m_currentSegmentedTarget = PTarget->loc.p;
+            m_lastTargetPos          = PTarget->loc.p;
+            success                  = PathTo(PTarget->loc.p, pathFlags);
+        }
+    }
+
+    if (!success && !(pathFlags & PATHFLAG_WALLHACK))
+    {
+        if (m_POwner->objtype == TYPE_PET || m_POwner->objtype == TYPE_TRUST || m_POwner->objtype == TYPE_FELLOW)
+        {
+            PathTo(PTarget->loc.p, pathFlags | PATHFLAG_WALLHACK);
+        }
+    }
+}
+
+void CPathFind::PathToLocation(const position_t& destination, uint8 pathFlags)
+{
+    TracyZoneScoped;
+    TracyZoneString(m_POwner->getName());
+
+    if (!m_POwner->loc.zone)
+    {
+        return;
+    }
+
+    // FALLBACK: If Navmesh is missing, use standard PathTo
+    if (!isNavMeshEnabled())
+    {
+        PathTo(destination, pathFlags);
+        return;
+    }
+
+    float distToTarget = distance(m_POwner->loc.p, destination);
+    bool  success      = true;
+
+    if (distToTarget > 50.0f)
+    {
+        // Long Range Logic
+        bool targetMoved = distance(destination, m_lastTargetPos) > 1.0f;
+        bool atWaypoint  = distance(m_POwner->loc.p, m_currentSegmentedTarget) < 5.0f;
+
+        // Check if uninitialized (0,0,0)
+        bool uninitialized = (m_currentSegmentedTarget.x == 0.0f && m_currentSegmentedTarget.y == 0.0f && m_currentSegmentedTarget.z == 0.0f);
+
+        if (targetMoved || atWaypoint || uninitialized)
+        {
+            // Restricted findPath (limited to 128 nodes)
+            // Start from mob position towards destination
+            std::vector<pathpoint_t> partialPath = m_POwner->loc.zone->m_navMesh->findPath(m_POwner->loc.p, destination, 128);
+
+            bool       validIntermediate = false;
+            position_t intermediate      = {};
+
+            if (!partialPath.empty())
+            {
+                intermediate = partialPath.back().position;
+
+                // Vertical Safety: Y coordinate within 5 yalms
+                if (std::abs(intermediate.y - m_POwner->loc.p.y) <= 5.0f)
+                {
+                    validIntermediate = true;
+                }
+            }
+
+            if (validIntermediate)
+            {
+                // Path to the intermediate waypoint
+                m_currentSegmentedTarget = intermediate;
+                m_lastTargetPos          = destination;
+                success                  = PathTo(intermediate, pathFlags);
+            }
+            else
+            {
+                // Fallback: Vertical safety failed or path failing
+                // Standard findPath to destination
+                m_currentSegmentedTarget = destination; // Set to target to avoid immediate retry
+                m_lastTargetPos          = destination;
+                success                  = PathTo(destination, pathFlags);
+            }
+        }
+    }
+    else
+    {
+        // Short-Range Logic (< 50 yalms)
+        bool targetMoved           = distance(destination, m_lastTargetPos) > 1.0f;
+        bool pathingToIntermediate = distance(m_currentSegmentedTarget, destination) > 1.0f;
+
+        if (targetMoved || pathingToIntermediate)
+        {
+            m_currentSegmentedTarget = destination;
+            m_lastTargetPos          = destination;
+            success                  = PathTo(destination, pathFlags);
+        }
+    }
+
+    if (!success && !(pathFlags & PATHFLAG_WALLHACK))
+    {
+        PathTo(destination, pathFlags | PATHFLAG_WALLHACK);
+    }
+}
+
+
 
 bool CPathFind::PathInRange(const position_t& point, float range, uint8 pathFlags /*= 0*/, bool clear /*= true*/)
 {
@@ -653,6 +836,9 @@ void CPathFind::Clear()
 
     m_currentTurn = 0;
     m_turnPoints.clear();
+
+    m_currentSegmentedTarget = {};
+    m_lastTargetPos = {};
 }
 
 void CPathFind::AddPoints(std::vector<pathpoint_t>&& points, bool reverse)

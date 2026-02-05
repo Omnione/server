@@ -58,6 +58,13 @@ public:
 
     // find and walk to the given point
     bool PathTo(const position_t& point, uint8 pathFlags = 0, bool clear = true);
+
+    // Segmented pathing to a dynamic entity
+    void PathToTarget(CBaseEntity* PTarget, uint8 pathFlags = 0);
+
+    // Segmented pathing to a static location
+    void PathToLocation(const position_t& destination, uint8 pathFlags = 0);
+
     // walk to the given point until in range
     bool PathInRange(const position_t& point, float range, uint8 pathFlags = 0, bool clear = true);
 
@@ -155,6 +162,10 @@ private:
     float m_maxDistance;
 
     bool m_carefulPathing;
+
+    // Segmented Pathing State
+    position_t m_currentSegmentedTarget;
+    position_t m_lastTargetPos;
 };
 
 #endif

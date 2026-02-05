@@ -49,7 +49,7 @@ public:
     void reload();
     void unload();
 
-    auto findPath(const position_t& start, const position_t& end) -> std::vector<pathpoint_t>;
+    auto findPath(const position_t& start, const position_t& end, int maxPolys = 512) -> std::vector<pathpoint_t>;
     auto findRandomPosition(const position_t& start, float maxRadius) -> std::pair<int16, position_t>;
 
     // Returns true if the point is in water (not implemented)

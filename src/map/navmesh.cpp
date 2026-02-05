@@ -255,7 +255,7 @@ void CNavMesh::unload()
     m_navMesh = nullptr;
 }
 
-auto CNavMesh::findPath(const position_t& start, const position_t& end) -> std::vector<pathpoint_t>
+auto CNavMesh::findPath(const position_t& start, const position_t& end, int maxPolys) -> std::vector<pathpoint_t>
 {
     TracyZoneScoped;
 
@@ -274,6 +274,11 @@ auto CNavMesh::findPath(const position_t& start, const position_t& end) -> std::
 
     DebugNavmesh("CNavMesh::findPath (%f, %f, %f) -> (%f, %f, %f) (zone: %u) (MAX_NAV_POLYS: %u)", start.x, start.y, start.z, end.x, end.y, end.z, m_zoneID, MAX_NAV_POLYS);
     dtStatus status = 0;
+
+    if (maxPolys <= 0 || (size_t)maxPolys > MAX_NAV_POLYS)
+    {
+        maxPolys = (int)MAX_NAV_POLYS;
+    }
 
     float spos[3];
     CNavMesh::ToDetourPos(&start, spos);
@@ -328,7 +333,7 @@ auto CNavMesh::findPath(const position_t& start, const position_t& end) -> std::
     // First, we're going to build up a list of polys that make up the path
     int32 pathPolyCount = 0;
 
-    status = m_navMeshQuery.findPath(startRef, endRef, sNearestPoint, eNearestPoint, &filter, m_navMeshQueryPolyData.data(), &pathPolyCount, MAX_NAV_POLYS);
+    status = m_navMeshQuery.findPath(startRef, endRef, sNearestPoint, eNearestPoint, &filter, m_navMeshQueryPolyData.data(), &pathPolyCount, maxPolys);
     if (dtStatusFailed(status))
     {
         ShowError("CNavMesh::findPath findPath error (%u)", m_zoneID);
@@ -350,7 +355,7 @@ auto CNavMesh::findPath(const position_t& start, const position_t& end) -> std::
     int32 straightPathCount = 0;
 
     // NOTE: The DT_STRAIGHTPATH_ALL_CROSSINGS flag can exasorbate the issue of getting trapped in local minima.
-    status = m_navMeshQuery.findStraightPath(sNearestPoint, eNearestPoint, m_navMeshQueryPolyData.data(), pathPolyCount, m_navMeshQueryStraightPathFloatData.data(), m_navMeshQueryStraightPathFlagData.data(), m_navMeshQueryStraightPathPolyData.data(), &straightPathCount, MAX_NAV_POLYS /*, DT_STRAIGHTPATH_ALL_CROSSINGS */);
+    status = m_navMeshQuery.findStraightPath(sNearestPoint, eNearestPoint, m_navMeshQueryPolyData.data(), pathPolyCount, m_navMeshQueryStraightPathFloatData.data(), m_navMeshQueryStraightPathFlagData.data(), m_navMeshQueryStraightPathPolyData.data(), &straightPathCount, maxPolys /*, DT_STRAIGHTPATH_ALL_CROSSINGS */);
 
     if (dtStatusFailed(status))
     {

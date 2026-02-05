@@ -146,6 +146,7 @@ public:
 
     bool  atPoint(sol::variadic_args va);                                          // is at given point
     void  pathTo(float x, float y, float z, const sol::object& flags);             // set new path to point without changing action
+    void  pathToLocation(float x, float y, float z, const sol::object& flags);
     bool  pathThrough(const sol::table& pointsTable, const sol::object& flagsObj); // walk at normal speed through the given points
     bool  isFollowingPath();                                                       // checks if the entity is following a path
     void  clearPath(const sol::object& pauseObj);                                  // removes current pathfind and stops moving

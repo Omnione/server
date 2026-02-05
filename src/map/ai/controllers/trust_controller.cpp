@@ -306,7 +306,11 @@ auto CTrustController::DoRoamTick(timer::time_point tick) -> Task<void>
     }
     else if (currentDistance > RoamDistance)
     {
-        if (currentDistance < RoamDistance * 3.0f && POwner->PAI->PathFind->PathAround(PFollowTarget->loc.p, RoamDistance, PATHFLAG_RUN | PATHFLAG_WALLHACK))
+        if (currentDistance > 50.0f)
+        {
+            POwner->PAI->PathFind->PathToTarget(PFollowTarget, PATHFLAG_RUN);
+        }
+        else if (currentDistance < RoamDistance * 3.0f && POwner->PAI->PathFind->PathAround(PFollowTarget->loc.p, RoamDistance, PATHFLAG_RUN | PATHFLAG_WALLHACK))
         {
             POwner->PAI->PathFind->FollowPath(m_Tick);
         }
