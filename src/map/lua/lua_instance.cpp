@@ -255,6 +255,11 @@ auto CLuaInstance::insertDynamicEntity(sol::table table) -> CBaseEntity*
     return luautils::GenerateDynamicEntity(m_PLuaInstance->GetZone(), m_PLuaInstance, std::move(table));
 }
 
+auto CLuaInstance::insertPropEntity(sol::table table) -> CBaseEntity*
+{
+    return luautils::GeneratePropEntity(m_PLuaInstance->GetZone(), m_PLuaInstance, std::move(table));
+}
+
 //==========================================================//
 
 void CLuaInstance::Register()
@@ -289,6 +294,7 @@ void CLuaInstance::Register()
     SOL_REGISTER("completed", CLuaInstance::completed);
     SOL_REGISTER("insertAlly", CLuaInstance::insertAlly);
     SOL_REGISTER("insertDynamicEntity", CLuaInstance::insertDynamicEntity);
+    SOL_REGISTER("insertPropEntity", CLuaInstance::insertPropEntity);
     SOL_REGISTER("getLocalVar", CLuaInstance::getLocalVar);
     SOL_REGISTER("setLocalVar", CLuaInstance::setLocalVar);
 }

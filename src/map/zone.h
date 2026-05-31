@@ -644,6 +644,7 @@ public:
     virtual void updateCharLevelRestriction(CCharEntity* PChar); // Removes the character's level restriction. If the zone has a level restriction, it is applied after it is removed.
 
     void InsertTriggerArea(std::unique_ptr<ITriggerArea>&& triggerArea); // Add an active area to the zone
+    void InsertTriggerEntity(std::unique_ptr<CEntityTriggerArea>&& triggerArea); // Add an trigger area to an entity in the zone
 
     virtual void TOTDChange(vanadiel_time::TOTD TOTD);
     virtual void PushPacket(CBaseEntity*, GLOBAL_MESSAGE_TYPE, const std::unique_ptr<CBasicPacket>&);

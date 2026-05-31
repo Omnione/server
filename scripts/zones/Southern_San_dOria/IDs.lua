@@ -136,6 +136,7 @@ zones[xi.zone.SOUTHERN_SAN_DORIA] =
         YOU_HAVE_JOINED_UNITY          = 16095, -- You have joined [Pieuje's/Ayame's/Invincible Shield's/Apururu's/Maat's/Aldo's/Jakoh Wahcondalo's/Naja Salaheem's/Flaviria's/Yoran-Oran's/Sylvie's] Unity!
         HAVE_ALREADY_CHANGED_UNITY     = 16171, -- You have already changed Unities. Please wait until the next tabulation period.
         TEAR_IN_FABRIC_OF_SPACE        = 16634, -- There appears to be a tear in the fabric of space...
+        TEATP_OFFSET                   = 16778, -- The ≺item≻ doesn't respond.
     },
     mob =
     {
@@ -155,6 +156,16 @@ zones[xi.zone.SOUTHERN_SAN_DORIA] =
         CAMEREINE = GetFirstID('Camereine'),
         EMOUSSINE = GetFirstID('Emoussine'),
         MEUNEILLE = GetFirstID('Meuneille'),
+
+        -- The Elite Adventurer Training Program (TEATP)
+        TEATP_MOOGLE          = 17719721,
+        TEATP_ERUDITE_MOOGLE  = GetFirstID('Erudite_Moogle'),--17719722,
+        TEATP_DECORATION_1    = 17719723,
+        TEATP_TRAP_1          = 17719739,
+        TEATP_AGENT_MOOGLE_1  = GetFirstID('Agent_Moogle'), --17719756,
+
+        TEATP_TREASURE_COFFER = 17719764,
+        TEATP_STAT_MOOGLE     = 17719719,
     },
 }
 

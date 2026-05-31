@@ -76,6 +76,7 @@ zones[xi.zone.BASTOK_MARKETS] =
         YOU_NOW_HAVE_AMT_CURRENCY     = 14382, -- You now have <number> [sparks of eminence/conquest points/points of imperial standing/Allied Notes/bayld/Fields of Valor points/assault points (Leujaoam)/assault points (Mamool Ja Training Grounds)/assault points (Lebros Cavern)/assault points (Periqia)/assault points (Ilrusi Atoll)/cruor/kinetic units/obsidian fragments/mweya plasm corpuscles/ballista points/Unity accolades/pinches of Escha silt/resistance credits].
         YOU_HAVE_JOINED_UNITY         = 14686, -- You have joined [Pieuje's/Ayame's/Invincible Shield's/Apururu's/Maat's/Aldo's/Jakoh Wahcondalo's/Naja Salaheem's/Flaviria's/Yoran-Oran's/Sylvie's] Unity!
         HAVE_ALREADY_CHANGED_UNITY    = 14762, -- You have already changed Unities. Please wait until the next tabulation period.
+        TEATP_OFFSET                  = 15258, -- The ≺item≻ doesn't respond.
     },
     mob =
     {
@@ -88,6 +89,16 @@ zones[xi.zone.BASTOK_MARKETS] =
         {
             [17739805] = 45, -- Olwyn
         },
+
+        -- The Elite Adventurer Training Program (TEATP)
+        TEATP_MOOGLE          = 17740022,
+        TEATP_ERUDITE_MOOGLE  = GetFirstID('Erudite_Moogle'),--17740023,
+        TEATP_DECORATION_1    = 17740024,
+        TEATP_TRAP_1          = 17740040,
+        TEATP_AGENT_MOOGLE_1  = GetFirstID('Agent_Moogle'), --17740057,
+
+        TEATP_TREASURE_COFFER = 17740065,
+        TEATP_STAT_MOOGLE     = 17740072,
     },
 }
 

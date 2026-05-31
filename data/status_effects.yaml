@@ -5543,6 +5543,15 @@ status_effects:
       - on_zone
       - no_loss_message
 
+  # Dummy effect for event "The Elite Adventurer Training Program"
+  elite_adventurer_costume:
+    id: 789
+    flags:
+      - on_zone
+      - death
+      - no_loss_message
+      - logout
+
   # Tracks 30 min timer in ACP mission "Those Who Lurk in Shadows (II)"
   mark_of_seed:
     id: 790

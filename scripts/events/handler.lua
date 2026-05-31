@@ -69,6 +69,7 @@ xi.events.registeredEvents =
     require('scripts/events/egg_hunt_egg-stravaganza'),
     require('scripts/events/mog_bonanza'),
     require('scripts/events/strange_happenings'),
+    require('scripts/events/the_elite_adventurer_training_program'),
 }
 
 xi.events.handler.checkSeasonalEvents = function()

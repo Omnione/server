@@ -3237,6 +3237,34 @@ bool CLuaBaseEntity::inMogHouse()
     return static_cast<CCharEntity*>(m_PBaseEntity)->inMogHouse();
 }
 
+bool CLuaBaseEntity::registerEntityTriggerArea(uint32 triggerID, float radius, float offset)
+{
+    if (!m_PBaseEntity)
+    {
+        return false;
+    }
+
+    // Cast safely to an NPC entity
+    auto* PEntity = dynamic_cast<CNpcEntity*>(m_PBaseEntity);
+    if (!PEntity)
+    {
+        return false;
+    }
+
+    auto* PZone = PEntity->loc.zone == nullptr ? zoneutils::GetZone(PEntity->loc.destination) : PEntity->loc.zone;
+
+    if (PZone)
+    {
+        auto triggerPtr = std::make_unique<CEntityTriggerArea>(triggerID, PEntity, radius, offset);
+
+        PZone->InsertTriggerEntity(std::move(triggerPtr));
+
+        return true;
+    }
+
+    return false;
+}
+
 /************************************************************************
  *  Function: isPlayerInTriggerArea
  *  Purpose : Returns a boolean indiciating if the player is within the provided TriggerAreaID
@@ -21131,6 +21159,7 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("setTHlevel", CLuaBaseEntity::setTHlevel);
 
     // TriggerArea management
+    SOL_REGISTER("registerEntityTriggerArea", CLuaBaseEntity::registerEntityTriggerArea);
     SOL_REGISTER("isPlayerInTriggerArea", CLuaBaseEntity::isPlayerInTriggerArea);
     SOL_REGISTER("onPlayerTriggerAreaEnter", CLuaBaseEntity::onPlayerTriggerAreaEnter);
     SOL_REGISTER("onPlayerTriggerAreaLeave", CLuaBaseEntity::onPlayerTriggerAreaLeave);

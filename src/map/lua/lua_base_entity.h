@@ -208,6 +208,7 @@ public:
     uint8  getContinentID();
     bool   inMogHouse();
 
+    bool registerEntityTriggerArea(uint32 triggerID, float radius, float offset);
     bool isPlayerInTriggerArea(uint32 triggerAreaId);
     void onPlayerTriggerAreaEnter(uint32 triggerAreaId);
     void onPlayerTriggerAreaLeave(uint32 triggerAreaId);

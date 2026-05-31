@@ -16,6 +16,8 @@ zoneObject.onInitialize = function(zone)
 end
 
 zoneObject.onZoneIn = function(player, prevZone)
+    xi.events.theEliteAdventurerTrainingProgram.clearEventStatus(player, prevZone) -- incase of a crash reset and clear the event when they log back in
+
     return xi.moghouse.onMoghouseZoneEvent(player, prevZone)
 end
 
@@ -25,6 +27,8 @@ end
 
 zoneObject.onTriggerAreaEnter = function(player, triggerArea)
     quests.ffr.onTriggerAreaEnter(player, triggerArea) -- player approaching Flyers for Regine NPCs
+
+    xi.events.theEliteAdventurerTrainingProgram.applyAgentMoogleThreat(player, triggerArea)
 end
 
 zoneObject.onTriggerAreaLeave = function(player, triggerArea)

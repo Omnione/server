@@ -280,7 +280,10 @@ void CZoneEntities::InsertNPC(CBaseEntity* PNpc)
     {
         PNpc->loc.zone = m_zone;
 
-        if (PNpc->look.size == MODEL_SHIP)
+        // MODEL_SHIP is used by static transports and by dynamic item props.
+        // Keep dynamic entities in the normal NPC container so they follow
+        // dynamic spawn/lookup behavior instead of transport-only behavior.
+        if (PNpc->look.size == MODEL_SHIP && !PNpc->IsDynamicEntity())
         {
             if (m_TransportList.contains(PNpc->targid))
             {

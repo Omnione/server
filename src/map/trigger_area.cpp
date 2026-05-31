@@ -23,6 +23,7 @@
 
 #include "common/logging.h"
 #include "common/utils.h"
+#include "map/entities/baseentity.h"
 
 // Initialize the trigger area to a unique number within the zone.
 // When trying to set 0, issue a warning.
@@ -143,6 +144,62 @@ bool CSphericalTriggerArea::isPointInside(float x, float y, float z) const
 }
 
 bool CSphericalTriggerArea::isPointInside(position_t pos) const
+{
+    return isPointInside(pos.x, pos.y, pos.z);
+}
+
+//
+// CEntityTriggerArea
+//
+
+CEntityTriggerArea::CEntityTriggerArea(uint32 triggerAreaID, CBaseEntity* pOwner, float radius, float forwardOffset)
+: ITriggerArea(triggerAreaID)
+, m_pOwner(pOwner)
+, m_radius(radius)
+, m_forwardOffset(forwardOffset)
+{
+}
+
+bool CEntityTriggerArea::isPointInside(float x, float y, float z) const
+{
+    if (!m_pOwner)
+    {
+        return false;
+    }
+
+    float ownerX = m_pOwner->loc.p.x;
+    float ownerY = m_pOwner->loc.p.y;
+    float ownerZ = m_pOwner->loc.p.z;
+
+    // Height Constraint (Prevents seeing through floors)
+    if (std::abs(y - ownerY) > 3.0f)
+    {
+        return false;
+    }
+
+    float rotationRad = (m_pOwner->loc.p.rotation / 128.0f) * M_PI;
+
+    // Dynamic Anchor Point Shift (Offset Handling)
+    if (m_forwardOffset != 0.0f)
+    {
+        ownerX -= m_forwardOffset * std::sin(rotationRad);
+        ownerZ -= m_forwardOffset * std::cos(rotationRad);
+    }
+
+    // Proximity Radius
+    float dX              = x - ownerX;
+    float dZ              = z - ownerZ;
+    float distanceSquared = (dX * dX) + (dZ * dZ);
+
+    if (distanceSquared > (m_radius * m_radius))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool CEntityTriggerArea::isPointInside(position_t pos) const
 {
     return isPointInside(pos.x, pos.y, pos.z);
 }
