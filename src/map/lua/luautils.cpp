@@ -59,6 +59,7 @@
 #include "packets/s2c/0x017_chat_std.h"
 #include "packets/s2c/0x05a_motionmes.h"
 #include "packets/s2c/0x0f9_res.h"
+#include "packets/entity_update.h"
 
 #include "utils/battleutils.h"
 #include "utils/charutils.h"
@@ -5769,6 +5770,115 @@ uint16 GetItemIDByName(const std::string& name)
     return id;
 }
 
+CBaseEntity* GeneratePropEntity(CZone* PZone, CInstance* PInstance, sol::table table)
+{
+    const auto itemId = table["itemId"].get_or<uint32>(0);
+    if (itemId == 0)
+    {
+        ShowWarning("luautils::GeneratePropEntity: Missing itemId.");
+        return nullptr;
+    }
+
+    const auto* PItem = xi::items::lookup(itemId);
+    if (!PItem)
+    {
+        ShowWarning("luautils::GeneratePropEntity: itemId=%u not found.", itemId);
+        return nullptr;
+    }
+
+    if (!PItem->isType(ITEM_FURNISHING))
+    {
+        ShowWarning("luautils::GeneratePropEntity: itemId=%u (%s) is not ITEM_FURNISHING.", itemId, PItem->getName().c_str());
+        return nullptr;
+    }
+
+    auto* PNpc = new CNpcEntity();
+    PNpc->name = "DefaultName";
+
+    // NOTE: Mob allegiance is the default for NPCs
+    PNpc->allegiance = static_cast<ALLEGIANCE_TYPE>(table.get_or<uint8>("allegiance", ALLEGIANCE_TYPE::MOB));
+
+    if (PInstance)
+    {
+        PInstance->AssignDynamicTargIDandLongID(PNpc);
+        PNpc->PInstance = PInstance;
+    }
+    else
+    {
+        PZone->GetZoneEntities()->AssignDynamicTargIDandLongID(PNpc);
+    }
+
+    PNpc->loc.p.rotation = table.get_or<uint8>("rotation", 0);
+    PNpc->loc.p.x        = table.get_or<float>("x", 0.01);
+    PNpc->loc.p.y        = table.get_or<float>("y", 0.01);
+    PNpc->loc.p.z        = table.get_or<float>("z", 0.01);
+    PNpc->loc.p.moving   = table.get_or<uint16>("moving", 0x8000);
+
+    auto name = table.get_or<std::string>("name", "");
+    if (name.empty())
+    {
+        name = fmt::format("Prop_{}", itemId);
+    }
+
+    auto lookupName = "PE_" + name;
+
+    PNpc->name       = lookupName;
+    PNpc->packetName = table.get_or<std::string>("packetName", name);
+    PNpc->isRenamed  = true;
+
+    PNpc->m_bReleaseTargIDOnDisappear = table["releaseIdOnDisappear"].get_or(false);
+
+    auto cacheEntry = lua[sol::create_if_nil]["xi"]["zones"][PZone->getName()]["npcs"][lookupName];
+
+    for (auto& [entryKey, entryValue] : table)
+    {
+        if (entryValue.get_type() == sol::type::function)
+        {
+            cacheEntry[entryKey] = entryValue.as<sol::function>();
+        }
+    }
+
+    PNpc->look.size = MODEL_SHIP;
+
+    const auto subId = static_cast<uint32>(PItem->getSubID());
+    auto       payloadItemId = table["payloadItemId"].get_or<uint32>(0);
+    if (payloadItemId == 0)
+    {
+        // Prefer explicit payload override; otherwise use subId when available, then fallback to itemId.
+        payloadItemId = subId > 0 ? subId : itemId;
+    }
+
+    PNpc->SetLocalVar("FurnishingItemId", payloadItemId);
+    PNpc->SetLocalVar("FurnishingSourceItemId", itemId);
+    PNpc->SetLocalVar("FurnishingSourceSubId", subId);
+
+    PNpc->namevis     = table.get_or<uint8>("namevis", 0);
+    PNpc->status      = STATUS_TYPE::NORMAL;
+    PNpc->name_prefix = table.get_or<uint8>("namePrefix", 0);
+    PNpc->widescan    = table.get_or<uint8>("widescan", 1);
+
+    PNpc->baseSpeed = table.get_or<uint8>("speed", 50);
+    PNpc->UpdateSpeed();
+    PNpc->animationSpeed = table.get_or<uint8>("speedsub", 50);
+    PNpc->animation      = table.get_or<uint8>("animation", 55);
+    PNpc->animationsub   = table.get_or<uint8>("animationsub", 0);
+
+    uint32 flags  = table.get_or<uint32>("entityFlags", 2051);
+    PNpc->m_flags = flags;
+
+    auto onTrigger = table["onTrigger"].get_or<sol::function>(sol::lua_nil);
+    if (onTrigger.valid())
+    {
+        PNpc->m_triggerable = true;
+    }
+
+    PZone->InsertNPC(PNpc);
+
+    PNpc->updatemask |= UPDATE_ALL_CHAR;
+
+    return PNpc;
+}
+
 CBaseEntity* GenerateDynamicEntity(CZone* PZone, CInstance* PInstance, sol::table table)
 {
     CBaseEntity* PEntity = nullptr;
@@ -5809,7 +5919,7 @@ CBaseEntity* GenerateDynamicEntity(CZone* PZone, CInstance* PInstance, sol::tabl
     PEntity->loc.p.x        = table.get_or<float>("x", 0.01);
     PEntity->loc.p.y        = table.get_or<float>("y", 0.01);
     PEntity->loc.p.z        = table.get_or<float>("z", 0.01);
-    PEntity->loc.p.moving   = 0;
+    PEntity->loc.p.moving   = table.get_or<uint16>("moving", 0);
 
     auto name = table.get_or<std::string>("name", "");
     if (name.empty())
@@ -5859,10 +5969,16 @@ CBaseEntity* GenerateDynamicEntity(CZone* PZone, CInstance* PInstance, sol::tabl
     {
         PNpc->namevis     = table.get_or<uint8>("namevis", 0);
         PNpc->status      = STATUS_TYPE::NORMAL;
-        PNpc->name_prefix = 32;
+        PNpc->name_prefix = table.get_or<uint8>("namePrefix", 32);
 
         // TODO: Does this even work?
         PNpc->widescan = table.get_or<uint8>("widescan", 1);
+
+        PNpc->baseSpeed = table.get_or<uint8>("speed", PNpc->baseSpeed);
+        PNpc->UpdateSpeed();
+        PNpc->animationSpeed = table.get_or<uint8>("speedsub", PNpc->animationSpeed);
+        PNpc->animation      = table.get_or<uint8>("animation", PNpc->animation);
+        PNpc->animationsub   = table.get_or<uint8>("animationsub", PNpc->animationsub);
 
         uint32 flags  = table.get_or<uint32>("entityFlags", 0);
         PNpc->m_flags = flags == 0 ? PNpc->m_flags : flags;

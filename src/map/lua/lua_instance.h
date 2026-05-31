@@ -77,6 +77,7 @@ public:
 
     auto insertAlly(uint32 groupid) -> CBaseEntity*;
     auto insertDynamicEntity(sol::table table) -> CBaseEntity*;
+    auto insertPropEntity(sol::table table) -> CBaseEntity*;
 
     bool operator==(const CLuaInstance& other) const
     {

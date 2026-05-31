@@ -46,6 +46,8 @@ constexpr std::uint16_t WeatherCycle = 2160;
 #include "enums/loot_recast.h"
 #include "ipc_client.h"
 #include "latent_effect_container.h"
+#include "map/trigger_area.h"
+#include "map/entities/baseentity.h"
 #include "map/navmesh/navmesh.h"
 #include "map/navmesh/navmesh_builder.h"
 #include "map_engine.h"
@@ -611,6 +613,14 @@ void CZone::InsertTriggerArea(std::unique_ptr<ITriggerArea>&& triggerArea)
     if (triggerArea != nullptr)
     {
         m_triggerAreaList.emplace_back(std::move(triggerArea));
+    }
+}
+
+void CZone::InsertTriggerEntity(std::unique_ptr<CEntityTriggerArea>&& triggerArea)
+{
+    if (triggerArea != nullptr)
+    {
+        m_triggerAreaList.push_back(std::move(triggerArea));
     }
 }
 
@@ -1326,8 +1336,22 @@ auto CZone::CheckTriggerAreas() -> Task<void>
                 return;
             }
 
-            for (const auto& triggerArea : m_triggerAreaList)
+            // Use an iterator loop so we can safely erase trigger areas if their parent entities vanish
+            for (auto it = m_triggerAreaList.begin(); it != m_triggerAreaList.end();)
             {
+                const auto& triggerArea = *it;
+                
+                if (auto* pEntityTrigger = dynamic_cast<CEntityTriggerArea*>(triggerArea.get()))
+                {
+                    // If the entity was deleted or turned invisible, wipe the trigger from the zone completely!
+                    if (!pEntityTrigger->getOwner() || pEntityTrigger->getOwner()->status == STATUS_TYPE::INVISIBLE)
+                    {
+                        it = m_triggerAreaList.erase(it);
+                        continue;
+                    }
+                }
+                
+
                 const auto triggerAreaID = triggerArea->getTriggerAreaID();
                 if (triggerArea->isPointInside(PChar->loc.p))
                 {
@@ -1344,6 +1368,9 @@ auto CZone::CheckTriggerAreas() -> Task<void>
                     PChar->onTriggerAreaLeave(triggerAreaID);
                     luautils::OnTriggerAreaLeave(PChar, triggerArea);
                 }
+
+                // Move forward normally
+                ++it;
             }
         });
 

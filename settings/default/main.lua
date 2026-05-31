@@ -282,6 +282,9 @@ xi.settings.main =
     -- Strange Happenings in Vana'Diel
     ENABLE_STRANGE_HAPPENINGS = 0,
 
+    -- The Elite Adventurer Training Program
+    ENABLE_THE_ELITE_ADVENTURER_TRAINING_PROGRAM = 0,
+
     -- FISH RANKING CONTEST
     -- Set to false to require manual progression of contest
     AUTO_FISHING_CONTEST = true,

@@ -91,3 +91,24 @@ private:
     float m_zPos;
     float m_radius;
 };
+
+class CBaseEntity; // Forward declaration
+
+class CEntityTriggerArea final : public ITriggerArea
+{
+public:
+    CEntityTriggerArea(uint32 triggerAreaID, CBaseEntity* pOwner, float radius, float forwardOffset = 0.0f);
+
+    CBaseEntity* getOwner() const
+    {
+        return m_pOwner;
+    }
+
+    bool isPointInside(float x, float y, float z) const override;
+    bool isPointInside(position_t pos) const override;
+
+private:
+    CBaseEntity* m_pOwner;
+    float        m_radius;
+    float        m_forwardOffset;
+};

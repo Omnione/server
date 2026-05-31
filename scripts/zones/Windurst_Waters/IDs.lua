@@ -67,6 +67,7 @@ zones[xi.zone.WINDURST_WATERS] =
         NESSRUGETOMALL_SHOP_DIALOG    = 11508, -- Welcome to the Rarab Tail Hostelry.
         DIABOLOS_UNLOCKED             = 11937, -- You are now able to summon Diabolos!
         DOOR_FIRMLY_SHUT              = 12345, -- The door is firmly shut...
+        TEATP_OFFSET                  = 17519, -- The ≺item≻ doesn't respond.
     },
 
     mob =
@@ -85,6 +86,16 @@ zones[xi.zone.WINDURST_WATERS] =
         },
 
         LELEROON_GREEN_DOOR = 17752333,
+
+        -- The Elite Adventurer Training Program (TEATP)
+        TEATP_MOOGLE          = 17752428,
+        TEATP_ERUDITE_MOOGLE  = GetFirstID('Erudite_Moogle'), --17752429,
+        TEATP_DECORATION_1    = 17752430,
+        TEATP_TRAP_1          = 17752446,
+        TEATP_AGENT_MOOGLE_1  = GetFirstID('Agent_Moogle'),--17752463,
+
+        TEATP_TREASURE_COFFER = 17752471,
+        TEATP_STAT_MOOGLE     = 17752476,
     },
 }
 

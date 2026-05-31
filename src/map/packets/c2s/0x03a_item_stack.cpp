@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
   Copyright (c) 2025 LandSandBoat Dev Teams
@@ -36,17 +36,6 @@ void GP_CLI_COMMAND_ITEM_STACK::process(MapSession* PSession, CCharEntity* PChar
     CItemContainer* PItemContainer = PChar->getStorage(this->Category);
 
     const uint8 size = PItemContainer->GetSize();
-
-    if (timer::now() < PItemContainer->LastSortingTime + 1s)
-    {
-        if (settings::get<uint8>("map.LIGHTLUGGAGE_BLOCK") == static_cast<int32>(++PItemContainer->SortingPacket))
-        {
-            ShowWarning("lightluggage detected: <%s> will be removed from server", PChar->getName());
-            charutils::ForceLogout(PChar);
-        }
-
-        return;
-    }
 
     PItemContainer->SortingPacket   = 0;
     PItemContainer->LastSortingTime = timer::now();

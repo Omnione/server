@@ -229,11 +229,21 @@ struct GP_SERV_CHAR_NPC
 
 std::string getTransportNPCName(CBaseEntity* PEntity)
 {
-    bool isElevator = PEntity->look.size == MODEL_ELEVATOR;
-    auto strSize    = isElevator ? 10 : 8;
+    const bool isElevator = PEntity->look.size == MODEL_ELEVATOR;
+    const auto strSize    = isElevator ? 10 : 8;
 
     std::string str(strSize, '\0');
-    std::memcpy(str.data() + 0, PEntity->name.data(), PEntity->name.size());
+
+    // Dynamic item props use item-id payload in the first 4 bytes.
+    // This keeps transport semantics for regular ships/elevators.
+    const auto furnishingItemId = PEntity->GetLocalVar("FurnishingItemId");
+    if (!isElevator && furnishingItemId > 0)
+    {
+        std::memcpy(str.data() + 0, &furnishingItemId, 4);
+        return str;
+    }
+
+    std::memcpy(str.data() + 0, PEntity->name.data(), std::min<size_t>(4, PEntity->name.size()));
 
     auto timestamp = PEntity->GetLocalVar("TransportTimestamp");
     std::memcpy(str.data() + 4, &timestamp, 4);
@@ -477,8 +487,21 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         {
             this->setSize(0x48);
             ref<uint16>(0x30) = PEntity->look.size;
-            auto name         = getTransportNPCName(PEntity);
-            std::memcpy(buffer_.data() + 0x34, name.data(), name.size());
+
+            const auto furnishingItemId = PEntity->GetLocalVar("FurnishingItemId");
+            if (PEntity->look.size == MODEL_SHIP && furnishingItemId > 0)
+            {
+                // Furnishing prop packets match 0x40-byte in captures.
+                this->setSize(0x40);
+                ref<uint16>(0x32) = 0;
+                ref<uint32>(0x34) = static_cast<uint32>(furnishingItemId);
+                std::memset(buffer_.data() + 0x38, 0, 8);
+            }
+            else
+            {
+                auto name = getTransportNPCName(PEntity);
+                std::memcpy(buffer_.data() + 0x34, name.data(), name.size());
+            }
         }
         break;
     }
@@ -535,6 +558,8 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         }
     }
 
+    const bool isFurnishingProp = PEntity->look.size == MODEL_SHIP && PEntity->GetLocalVar("FurnishingItemId") > 0;
+
     // Slightly bigger packet to encompass both name and model on first spawn, and only for dynamic entities.
     if (type == ENTITY_SPAWN && PEntity->isRenamed && PEntity->look.size == MODEL_EQUIPPED && PEntity->targid >= 0x700)
     {
@@ -560,7 +585,7 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
     }
     // If the entity has been renamed, we have to re-send the name during every update.
     // Otherwise it will revert to it's default name (if applicable).
-    else if (PEntity->isRenamed)
+    else if (PEntity->isRenamed && !isFurnishingProp)
     {
         updatemask |= UPDATE_NAME;
         ref<uint8>(0x0A) |= updatemask;

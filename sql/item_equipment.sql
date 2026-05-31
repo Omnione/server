@@ -11021,9 +11021,9 @@ INSERT INTO `item_equipment` VALUES (21945,'telognophos_katana',99,0,0,0,0,0,1,0
 INSERT INTO `item_equipment` VALUES (21946,'auge_katana',99,119,2048,0,0,0,1,0,0,4);               -- TODO: MId
 INSERT INTO `item_equipment` VALUES (21947,'daduchos_katana',99,119,2048,0,0,0,1,0,0,4);           -- TODO: MId
 INSERT INTO `item_equipment` VALUES (21948,'telopanos_katana',99,119,2048,0,0,0,1,0,0,5);          -- TODO: MId
-INSERT INTO `item_equipment` VALUES (21949,'shaded_moogle_rod',1,0,4194303,0,0,0,3,0,0,0);        -- TODO: MId
+INSERT INTO `item_equipment` VALUES (21949,'shaded_moogle_rod',1,0,4194303,25528,0,0,3,0,0,0);
 INSERT INTO `item_equipment` VALUES (21950,'bud_rod',1,0,4194303,0,0,0,3,0,0,0);                  -- TODO: Not implemented, verify model
-INSERT INTO `item_equipment` VALUES (21951,'shaded_moogle_rod_+1',1,0,4194303,0,0,0,3,0,0,0);     -- TODO: MId
+INSERT INTO `item_equipment` VALUES (21951,'shaded_moogle_rod_+1',1,0,4194303,25528,0,0,3,0,0,0);
 INSERT INTO `item_equipment` VALUES (21952,'zanmato_+2',99,119,2048,0,0,0,1,0,0,0);               -- TODO: Not implemented, verify model
 INSERT INTO `item_equipment` VALUES (21953,'mutsu-no-kami_yoshiyuki',99,119,2048,0,0,0,1,0,0,0);  -- TODO: Not implemented, verify model
 INSERT INTO `item_equipment` VALUES (21954,'amanomurakumo',99,119,2048,552,0,1,1,0,0,0);

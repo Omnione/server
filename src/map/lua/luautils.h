@@ -469,6 +469,7 @@ uint16 GetItemIDByName(const std::string& name);
 auto   SendItemToDeliveryBox(const std::string& playerName, uint16 itemId, uint32 quantity, const std::string& senderText) -> SendToDBoxReturnCode;
 
 auto GenerateDynamicEntity(CZone* PZone, CInstance* PInstance, sol::table table) -> CBaseEntity*;
+auto GeneratePropEntity(CZone* PZone, CInstance* PInstance, sol::table table) -> CBaseEntity*;
 
 // Fishing Contest
 auto GetFishingContest() -> sol::table;

@@ -731,10 +731,11 @@ enum EFFECT : uint16
     EFFECT_PROWESS_MACC_MATK     = 785, // *flat 4% for now
     EFFECT_PROWESS_CURE_POTENCY  = 786, // *flat 4% for now
     EFFECT_PROWESS_WS_DMG        = 787, // (Unimplemented) 2% per tier.
-    EFFECT_PROWESS_KILLER        = 788, // *flat +4 for now
+    EFFECT_PROWESS_KILLER          = 788, // *flat +4 for now
     // End GoV Prowess fakery
 
-    EFFECT_MARK_OF_SEED        = 790, // Tracks 30 min timer in ACP mission "Those Who Lurk in Shadows (II)"
+    EFFECT_ELITE_ADVENTURER_COSTUME = 789, // Dummy effect for event: The Elite Adventurer Training Program
+    EFFECT_MARK_OF_SEED             = 790, // Tracks 30 min timer in ACP mission "Those Who Lurk in Shadows (II)"
     EFFECT_ALL_MISS            = 791, // All attacks miss (ie - Tiamat while flying)
     EFFECT_SUPER_BUFF          = 792, // Boss buff (ie - Nidhogg "2hour")
     EFFECT_NINJUTSU_ELE_DEBUFF = 793,
@@ -762,11 +763,10 @@ enum EFFECT : uint16
     EFFECT_TRUST_AURA_MAGIC_ATTACK = 813, // MATT Aura, Magic Attack Boost + 19 and +19 Magic Accuracy boost at lvl 99, stacks with player Indi / Geo ACUMEN.
     // End of Trust Aura Effects
 
-    // 789
-    // 813-1022
+    // 814-1022
     // EFFECT_PLACEHOLDER           = 1023 // The client dat file seems to have only this many "slots", results of exceeding that are untested.
 };
-#define MAX_EFFECTID 814 // 768 real + 46 custom
+#define MAX_EFFECTID 814 // 768 real + 46 custom (includes 789)
 DECLARE_FORMAT_AS_UNDERLYING(EFFECT);
 
 /************************************************************************

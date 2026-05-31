@@ -50,6 +50,7 @@ public:
     void registerCuboidTriggerArea(uint32 triggerAreaID, float xMin, float yMin, float zMin, float xMax, float yMax, float zMax);
     void registerCylindricalTriggerArea(uint32 triggerAreaID, float xPos, float zPos, float radius);
     void registerSphericalTriggerArea(uint32 triggerAreaID, float xPos, float yPos, float zPos, float radius);
+    void registerEntityTriggerArea(uint32 triggerAreaID, uint32 npcID, float radius, float forwardOffset);
 
     auto        levelRestriction() -> sol::object;
     auto        getPlayers() -> sol::table;
@@ -68,6 +69,7 @@ public:
     auto        getTerrainType(const sol::table& position) -> TerrainType;
     auto        getFloorId(const sol::table& position) -> uint8;
     auto        insertDynamicEntity(sol::table table) -> CBaseEntity*;
+    auto        insertPropEntity(sol::table table) -> CBaseEntity*;
 
     auto getSoloBattleMusic();
     auto getPartyBattleMusic();

@@ -12,6 +12,8 @@ zoneObject.onInitialize = function(zone)
 end
 
 zoneObject.onZoneIn = function(player, prevZone)
+    xi.events.theEliteAdventurerTrainingProgram.clearEventStatus(player, prevZone) -- incase of a crash reset and clear the event when they log back in
+
     return xi.moghouse.onMoghouseZoneEvent(player, prevZone)
 end
 
@@ -20,6 +22,7 @@ zoneObject.onConquestUpdate = function(zone, updatetype, influence, owner, ranki
 end
 
 zoneObject.onTriggerAreaEnter = function(player, triggerArea)
+    xi.events.theEliteAdventurerTrainingProgram.applyAgentMoogleThreat(player, triggerArea)
 end
 
 zoneObject.onEventUpdate = function(player, csid, option, npc)

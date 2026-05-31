@@ -119,6 +119,24 @@ void CLuaZone::registerSphericalTriggerArea(uint32 triggerAreaID, float xPos, fl
     m_pLuaZone->InsertTriggerArea(std::move(tArea));
 }
 
+void CLuaZone::registerEntityTriggerArea(uint32 triggerAreaID, uint32 entityID, float radius, float forwardOffset)
+{
+    if (m_pLuaZone)
+    {
+        // Query the zone's active entity list directly using the provided entity ID
+        CBaseEntity* PEntity = m_pLuaZone->GetZoneEntities()->GetEntity(entityID);
+
+        if (PEntity)
+        {
+            m_pLuaZone->InsertTriggerEntity(std::make_unique<CEntityTriggerArea>(triggerAreaID, PEntity, radius, forwardOffset));
+        }
+        else
+        {
+            ShowWarning("CLuaZone::registerEntityTriggerArea - Entity ID %u not found in Zone %u", entityID, m_pLuaZone->GetID());
+        }
+    }
+}
+
 /************************************************************************
  *                                                                       *
  *  Setting the level limit for the zone                                 *
@@ -256,6 +274,11 @@ bool CLuaZone::isNavigablePoint(const sol::table& point)
 auto CLuaZone::insertDynamicEntity(sol::table table) -> CBaseEntity*
 {
     return luautils::GenerateDynamicEntity(m_pLuaZone, nullptr, std::move(table));
+}
+
+auto CLuaZone::insertPropEntity(sol::table table) -> CBaseEntity*
+{
+    return luautils::GeneratePropEntity(m_pLuaZone, nullptr, std::move(table));
 }
 
 /************************************************************************
@@ -396,6 +419,7 @@ void CLuaZone::Register()
     SOL_REGISTER("getTerrainType", CLuaZone::getTerrainType);
     SOL_REGISTER("getFloorId", CLuaZone::getFloorId);
     SOL_REGISTER("insertDynamicEntity", CLuaZone::insertDynamicEntity);
+    SOL_REGISTER("insertPropEntity", CLuaZone::insertPropEntity);
 
     SOL_REGISTER("getSoloBattleMusic", CLuaZone::getSoloBattleMusic);
     SOL_REGISTER("getPartyBattleMusic", CLuaZone::getPartyBattleMusic);

@@ -31,6 +31,12 @@ end
 function CBaseEntity:printToPlayer(message, messageTypeObj, nameObj)
 end
 
+---@param message string
+---@param messageTypeObj integer?
+---@return nil
+function CBaseEntity:printRawText(byteTable, messageTypeObj)
+end
+
 ---@param message string Message to send
 ---@param arg1 integer? Message Type
 ---@param arg2 integer? Message Range

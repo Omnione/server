@@ -273,6 +273,14 @@ end
 
 xi.player.onPlayerEmote = function(player, emoteId)
     if
+        xi.events and
+        xi.events.theEliteAdventurerTrainingProgram and
+        xi.events.theEliteAdventurerTrainingProgram.processEmote
+    then
+        xi.events.theEliteAdventurerTrainingProgram.processEmote(player, emoteId)
+    end
+
+    if
         emoteId == xi.emote.CHEER and
         player:hasStatusEffect(xi.effect.FULL_SPEED_AHEAD)
     then
